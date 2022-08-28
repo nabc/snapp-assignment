@@ -1,36 +1,44 @@
 import { useQuery } from "@tanstack/react-query";
 import { getContactsList } from "api/contacts";
 import ApiStateHandler from "components/ApiStateHandler";
+import { Grid, Title } from "components/UiKit";
+import { ContactModel } from "types";
+import Pagination from "./Pagination";
+import FilterForm from "./FilterForm";
+import FrequentContacts from "./FrequentContacts";
+import ContactCard from "./ContactCard";
 
 export default function Home() {
-  // TODO: should have a form - single input with throttling/debouncing - for filtering
-  // TODO: should have a list of frequently visited contacts / data should be retrieved from redux store
-
-  // TODO: should show contact list if data is successfully retrieved => work on UI
-  // TODO: contact list should use contact card component which is linked to the contact page
-
-  const {
-    isLoading,
-    isError,
-    data: { items = [], meta } = {},
-    error,
-  } = useQuery<any, { message: string }>(["contactList"], getContactsList, {
-    initialData: {
-      items: [],
-      meta: {},
-    },
-  });
-
-  console.log(meta);
+  const { isLoading, isError, data: { items = [], meta } = {}, error } = useQuery<any, { message: string }>(
+    ["contactList"],
+    getContactsList,
+    {
+      initialData: {
+        items: [],
+        meta: {},
+      },
+    }
+  );
 
   return (
     <ApiStateHandler isLoading={isLoading} isError={isError} error={error} hasData={items.length > 0}>
-      <ul>
-        <div>home page</div>
-        {items.map((contact: any) => (
-          <li key={contact.id}>{contact.first_name}</li>
+      <FilterForm />
+      <FrequentContacts />
+      <Title>Contacts List</Title>
+      <Grid>
+        {items.map((contact: ContactModel) => (
+          <ContactCard
+            key={contact.id}
+            firstName={contact.first_name}
+            lastName={contact.last_name}
+            phone={contact.phone}
+            avatar={contact.avatar}
+            address={contact.address}
+            id={contact.id}
+          />
         ))}
-      </ul>
+      </Grid>
+      <Pagination meta={meta} />
     </ApiStateHandler>
   );
 }
