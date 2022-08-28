@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { getContact } from "api/contacts";
 import ApiStateHandler from "components/ApiStateHandler";
 import { Avatar, Column } from "components/UiKit";
-import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { updateFrequentContact } from "store/appSlice";
