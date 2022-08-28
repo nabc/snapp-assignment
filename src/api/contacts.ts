@@ -7,7 +7,7 @@ export async function getContactsList() {
   // TODO: should have a function that generates "where" param from filter object
   // TODO: limit & skip are hard coded for now, but they should be dynamic
 
-  const { data } = await axiosInstance.get("passenger?limit=10&skip=0");
+  const { data } = await axiosInstance.get("passenger?limit=12&skip=0");
   return data;
 }
 
