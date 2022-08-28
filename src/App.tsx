@@ -1,3 +1,4 @@
+import { Main } from "components/UiKit";
 import { Routes, Route } from "react-router-dom";
 import AppProviders from "./AppProviders";
 import Contact from "./pages/Contact";
@@ -9,10 +10,12 @@ export default function App() {
 
   return (
     <AppProviders>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/:id" element={<Contact />} />
-      </Routes>
+      <Main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/:id" element={<Contact />} />
+        </Routes>
+      </Main>
     </AppProviders>
   );
 }
