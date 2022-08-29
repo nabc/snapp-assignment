@@ -6,7 +6,7 @@ import ClearIcon from "components/icons/ClearIcon";
 import { Div, Input, FormField, ErrorMessage, SubmitButton } from "components/UiKit";
 import { FilterQueryType } from "types";
 
-import SelectField from "./SelectField";
+import SelectField from "../../../components/SelectField";
 
 const filterSelectOptions = [
   { value: "first_name", label: "First Name" },
@@ -14,6 +14,7 @@ const filterSelectOptions = [
   { value: "phone", label: "Phone" },
 ];
 export default function FilterForm() {
+  // TODO: add validation to input based on select value
   const { updateFilter, removeKeyFromParams } = useParamParser();
 
   const {
@@ -27,7 +28,6 @@ export default function FilterForm() {
     const filterData = data.filter;
     const filterType = data.filterType;
     const where: FilterQueryType = { [filterType]: { contains: filterData } };
-    console.log("where", JSON.stringify(where));
     updateFilter(where);
   };
 
