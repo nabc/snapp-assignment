@@ -9,9 +9,9 @@ import useParamParser from "hooks/useParamParser";
 import ApiStateHandler from "components/ApiStateHandler";
 import { ContactsGrid } from "components/UiKit";
 import { ContactModel } from "types";
+import ContactCard from "pages/Home/ContactCard";
 
 import Pagination from "./Pagination";
-import ContactCard from "./ContactCard";
 
 export default function ContactsList() {
   const { updatePageParameters } = useParamParser();

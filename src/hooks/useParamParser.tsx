@@ -26,7 +26,6 @@ export default function useParamParser() {
   };
 
   const removeKeyFromParams = (key: string) => {
-    console.log({ key });
     searchParams.delete(key);
     setSearchParams(searchParams, { replace: true });
   };
