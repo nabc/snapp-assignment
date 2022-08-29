@@ -1,4 +1,73 @@
+import { Controller, useForm } from "react-hook-form";
+
+import useParamParser from "hooks/useParamParser";
+import SearchIcon from "components/icons/SearchIcon";
+import ClearIcon from "components/icons/ClearIcon";
+import { Div, Input, FormField, ErrorMessage, SubmitButton } from "components/UiKit";
+import { FilterQueryType } from "types";
+
+import SelectField from "./SelectField";
+
+const filterSelectOptions = [
+  { value: "first_name", label: "First Name" },
+  { value: "last_name", label: "Last Name" },
+  { value: "phone", label: "Phone" },
+];
 export default function FilterForm() {
-  // TODO: should have a form - single input with throttling/debouncing - for filtering
-  return <div>FilterForm </div>;
+  const { updateFilter, removeKeyFromParams } = useParamParser();
+
+  const {
+    control,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ defaultValues: { filter: "", filterType: "first_name" } });
+
+  const onSubmit = (data: any) => {
+    const filterData = data.filter;
+    const filterType = data.filterType;
+    const where: FilterQueryType = { [filterType]: { contains: filterData } };
+    console.log("where", JSON.stringify(where));
+    updateFilter(where);
+  };
+
+  const clearFilter = () => {
+    reset({ filter: "" }, { keepErrors: false });
+    removeKeyFromParams("where");
+  };
+
+  return (
+    <Div>
+      <form className="flex flex-col md:flex-row md:items-end w-full mt-3 " onSubmit={handleSubmit(onSubmit)}>
+        <div className="my-1 md:my-0 md:mx-1 basis-1/4">
+          <Controller
+            name="filterType"
+            control={control}
+            render={({ field }) => <SelectField {...field} options={filterSelectOptions} label="Filter By" />}
+          />
+        </div>
+        <div className="my-1 md:my-0 md:mx-1 basis-3/4">
+          <Controller
+            name="filter"
+            control={control}
+            rules={{ required: "This field is required" }}
+            render={({ field }) => (
+              <FormField>
+                <Input {...field} type="text" error={Boolean(errors.filter)} placeholder="Type here ..." />
+                <ClearIcon onClick={clearFilter} className="h-6 w-6 absolute right-1 top-2 cursor-pointer" />
+                <ErrorMessage>
+                  <>{errors.filter?.message}</>
+                </ErrorMessage>
+              </FormField>
+            )}
+          />
+        </div>
+        <div className="mt-4 w-full md:my-0 md:mx-1 basis-1/6">
+          <SubmitButton>
+            <SearchIcon />
+          </SubmitButton>
+        </div>
+      </form>
+    </Div>
+  );
 }

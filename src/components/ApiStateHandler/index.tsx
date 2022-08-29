@@ -1,3 +1,4 @@
+import { InfoSpan } from "components/UiKit";
 import { PropsWithChildren } from "react";
 
 interface ApiStateHandlerProps {
@@ -14,15 +15,15 @@ export default function ApiStateHandler({
   children,
 }: PropsWithChildren<ApiStateHandlerProps>) {
   if (isLoading) {
-    return <span>Loading...</span>;
+    return <InfoSpan info>Loading...</InfoSpan>;
   }
 
   if (isError) {
-    return <span>Error: {error?.message}</span>;
+    return <InfoSpan error>Error: {error?.message}</InfoSpan>;
   }
 
   if (!hasData) {
-    return <span>Ooops.... No Data!</span>;
+    return <InfoSpan info>Ooops.... No Data!</InfoSpan>;
   }
 
   return <>{children}</>;

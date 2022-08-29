@@ -1,9 +1,5 @@
-type MetaModel = {
-  criteria: any;
-  limit: number;
-  skipped: number;
-  total: number;
-};
+import { MetaModel } from "types";
+
 interface PaginationProps {
   meta: MetaModel;
 }
