@@ -4,12 +4,10 @@ import { RootState } from "./index";
 
 interface appState {
   frequentContacts: ContactModel[];
-  searchQuery: string;
 }
 
 const initialState: appState = {
   frequentContacts: [],
-  searchQuery: "limit=12&skip=0",
 };
 
 export const appSlice = createSlice({
@@ -22,19 +20,13 @@ export const appSlice = createSlice({
         currentFrequentContacts.pop();
       }
       currentFrequentContacts.unshift(action.payload);
-      console.log("currentFrequentContacts", currentFrequentContacts);
-
       state.frequentContacts = currentFrequentContacts;
-    },
-    setSearchQuery: (state, action) => {
-      state.searchQuery = action.payload;
     },
   },
 });
 
-export const { updateFrequentContact, setSearchQuery } = appSlice.actions;
+export const { updateFrequentContact } = appSlice.actions;
 
 export const selectFrequentContacts = (state: RootState) => state.app.frequentContacts;
-export const selectSearchQuery = (state: RootState) => state.app.searchQuery;
 
 export default appSlice.reducer;

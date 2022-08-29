@@ -1,19 +1,19 @@
 import { useSelector } from "react-redux";
 import { selectFrequentContacts } from "store/appSlice";
 import { ContactModel } from "types";
-import { Column, Grid, Title } from "components/UiKit";
-import ContactCard from "../ContactCard";
+import { ContactsGrid, Title } from "components/UiKit";
+import ContactCard from "./ContactCard";
 
 export default function FrequentContacts() {
   const frequentContacts = useSelector(selectFrequentContacts);
 
   if (!frequentContacts.length) {
-    return <Title>No contacts have been visited! </Title>;
+    return <Title>No contacts have been visited!</Title>;
   }
   return (
-    <Column>
-      <Title>FrequentContacts</Title>
-      <Grid>
+    <>
+      <Title>Frequent Contacts</Title>
+      <ContactsGrid>
         {frequentContacts.map((contact: ContactModel) => (
           <ContactCard
             key={contact.id}
@@ -25,7 +25,7 @@ export default function FrequentContacts() {
             id={contact.id}
           />
         ))}
-      </Grid>
-    </Column>
+      </ContactsGrid>
+    </>
   );
 }
