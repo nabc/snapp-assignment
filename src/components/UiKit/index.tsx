@@ -97,6 +97,21 @@ export const InfoSpan = styled.span.attrs<any, any>({
   }}
 `;
 
+export const PageButtonSpan = styled.span.attrs<any, any>({
+  className:
+    "inline-flex items-center py-2 px-4 mr-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-blue-300 ",
+})`
+  ${(props) => {
+    if (props.selected) {
+      return tw` text-blue-600 bg-blue-50 border-blue-300 hover:bg-blue-100 hover:text-blue-700`;
+    }
+    if (props.disabled) {
+      return tw` text-gray-600 bg-gray-50 border-gray-300 hover:bg-gray-100 hover:text-gray-700`;
+    }
+    return tw` hover:bg-blue-100 hover:text-blue-700`;
+  }}
+`;
+
 export const ErrorMessage = styled.span.attrs<any>({
   className: "absolute left-2 -bottom-4 text-red-500 underline decoration-red-500 text-xs mt-1",
 })``;

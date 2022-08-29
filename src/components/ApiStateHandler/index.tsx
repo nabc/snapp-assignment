@@ -14,17 +14,15 @@ export default function ApiStateHandler({
   error,
   children,
 }: PropsWithChildren<ApiStateHandlerProps>) {
-  if (isLoading) {
-    return <InfoSpan info>Loading...</InfoSpan>;
-  }
-
   if (isError) {
     return <InfoSpan error>Error: {error?.message}</InfoSpan>;
   }
 
-  if (!hasData) {
-    return <InfoSpan info>Ooops.... No Data!</InfoSpan>;
-  }
-
-  return <>{children}</>;
+  return (
+    <>
+      {isLoading && <InfoSpan info>Loading...</InfoSpan>}
+      {!hasData && !isLoading && <InfoSpan info>Ooops.... No Data!</InfoSpan>}
+      {children}
+    </>
+  );
 }

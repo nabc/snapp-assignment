@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FilterQueryType } from "types";
 
@@ -19,11 +21,11 @@ export default function useParamParser() {
     updateSearchParams("sort", sort);
   };
 
-  const updatePageParameters = (pageParameters: { limit: number; skip: number }) => {
-    searchParams.set("limit", pageParameters.limit.toString());
-    searchParams.set("skip", pageParameters.skip.toString());
-    setSearchParams(searchParams, { replace: true });
-  };
+  const updatePageParameters = useCallback((limit: number, skip: number) => {
+    searchParams.set("limit", limit.toString());
+    searchParams.set("skip", skip.toString());
+    setSearchParams(searchParams);
+  }, []);
 
   const removeKeyFromParams = (key: string) => {
     searchParams.delete(key);
