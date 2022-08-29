@@ -6,6 +6,7 @@ import { AxiosResponse } from "axios";
 
 import { getContactsList } from "api/contacts";
 import useParamParser from "hooks/useParamParser";
+import usePagination from "hooks/usePagination";
 import ApiStateHandler from "components/ApiStateHandler";
 import { ContactsGrid } from "components/UiKit";
 import { ContactModel } from "types";
@@ -15,7 +16,6 @@ import Pagination from "./Pagination";
 
 export default function ContactsList() {
   const { updatePageParameters } = useParamParser();
-
   const { search } = useLocation();
 
   const { isLoading, isError, data, error, mutate } = useMutation<
@@ -23,34 +23,56 @@ export default function ContactsList() {
     { message: string },
     string,
     unknown
-  >((query: string) => getContactsList(query));
+  >((query: string) => getContactsList(query), {});
+
+  // TODO: maybe switch back to useQuery to preserve data and prevent ui lag
+
+  const { page, lastPageNumber, limit, pageNumbers, changePage, changeLimit } = usePagination(
+    data ? data.data.meta : { skipped: 0, total: 0 }
+  );
 
   useEffect(() => {
-    console.log("useEffect", search);
-
     if (search === "") {
-      updatePageParameters({ limit: 12, skip: 0 });
+      updatePageParameters(12, 0);
     } else {
       mutate(search);
     }
   }, [search]);
 
+  useEffect(() => {
+    updatePageParameters(limit, (page - 1) * 12);
+  }, [page, limit]);
+
   return (
-    <ApiStateHandler isLoading={isLoading} isError={isError} error={error!} hasData={Boolean(data?.data.items.length)}>
-      <ContactsGrid>
-        {data?.data.items.map((contact: ContactModel) => (
-          <ContactCard
-            key={contact.id}
-            firstName={contact.first_name}
-            lastName={contact.last_name}
-            phone={contact.phone}
-            avatar={contact.avatar}
-            address={contact.address}
-            id={contact.id}
-          />
-        ))}
-      </ContactsGrid>
-      <Pagination meta={data?.data.meta} />
-    </ApiStateHandler>
+    <>
+      <ApiStateHandler
+        isLoading={isLoading}
+        isError={isError}
+        error={error!}
+        hasData={Boolean(data?.data.items.length)}
+      >
+        <ContactsGrid>
+          {data?.data.items.map((contact: ContactModel) => (
+            <ContactCard
+              key={contact.id}
+              firstName={contact.first_name}
+              lastName={contact.last_name}
+              phone={contact.phone}
+              avatar={contact.avatar}
+              address={contact.address}
+              id={contact.id}
+            />
+          ))}
+        </ContactsGrid>
+      </ApiStateHandler>
+      <Pagination
+        page={page}
+        lastPageNumber={lastPageNumber}
+        limit={limit}
+        pageNumbers={pageNumbers}
+        changePage={changePage}
+        changeLimit={changeLimit}
+      />
+    </>
   );
 }

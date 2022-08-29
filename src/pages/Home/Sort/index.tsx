@@ -23,8 +23,6 @@ export default function Sort() {
       removeKeyFromParams("sort");
     } else {
       const newSortString = sortBy + " " + order;
-      console.log({ newSortString });
-
       updateSort(newSortString);
     }
   }, [sortBy, order]);

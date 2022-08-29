@@ -21,11 +21,7 @@ const SelectField = forwardRef(
           onChange={onChange}
           ref={ref}
         >
-          {hasDefaultOption && (
-            <option selected value="">
-              Choose ...
-            </option>
-          )}
+          {hasDefaultOption && <option value="">Choose ...</option>}
           {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
