@@ -1,10 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 
-import { Main } from "components/UiKit";
-
 import AppProviders from "./AppProviders";
-import Contact from "./pages/Contact";
+import { Main } from "./styled.components";
 import Home from "./pages/Home";
+import Contact from "./pages/Contact";
 
 export default function App() {
   return (
