@@ -1,8 +1,9 @@
 import { useSelector } from "react-redux";
 import { selectFrequentContacts } from "store/appSlice";
 import { ContactModel } from "types";
-import { ContactsGrid, Title } from "components/UiKit";
 import ContactCard from "pages/Home/ContactCard";
+
+import { ContactsGrid, Title } from "../styled.components";
 
 export default function FrequentContacts() {
   const frequentContacts = useSelector(selectFrequentContacts);

@@ -15,7 +15,7 @@ export const appSlice = createSlice({
   initialState,
   reducers: {
     updateFrequentContact: (state, action) => {
-      const currentFrequentContacts = state.frequentContacts;
+      const currentFrequentContacts = state.frequentContacts.filter((contact) => contact.id !== action.payload.id);
       if (currentFrequentContacts.length === 4) {
         currentFrequentContacts.pop();
       }

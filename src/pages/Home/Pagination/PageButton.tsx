@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-import { PageButtonSpan } from "components/UiKit";
+import { PageButtonSpan } from "../styled.components";
 
 interface PageButtonProps {
   onClick: (...event: any) => void;

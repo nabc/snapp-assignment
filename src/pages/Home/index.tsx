@@ -1,4 +1,4 @@
-import { Title } from "components/UiKit";
+import { Title } from "./styled.components";
 
 import FilterForm from "./FilterForm";
 import Sort from "./Sort";

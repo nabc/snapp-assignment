@@ -1,4 +1,4 @@
-import { PageButtonSpan } from "components/UiKit";
+import { PageButtonSpan } from "../styled.components";
 
 interface PageButtonProps {
   selected: boolean;

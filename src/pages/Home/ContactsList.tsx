@@ -8,27 +8,31 @@ import { getContactsList } from "api/contacts";
 import useParamParser from "hooks/useParamParser";
 import usePagination from "hooks/usePagination";
 import ApiStateHandler from "components/ApiStateHandler";
-import { ContactsGrid } from "components/UiKit";
 import { ContactModel } from "types";
 import ContactCard from "pages/Home/ContactCard";
 
 import Pagination from "./Pagination";
+import { ContactsGrid } from "./styled.components";
 
 export default function ContactsList() {
   const { updatePageParameters } = useParamParser();
   const { search } = useLocation();
 
-  const { isLoading, isError, data, error, mutate } = useMutation<
-    AxiosResponse<any, any>,
-    { message: string },
-    string,
-    unknown
-  >((query: string) => getContactsList(query), {});
+  const {
+    isLoading,
+    isError,
+    data: { data: { items, meta } = { items: [], meta: {} } } = {},
+    error,
+    mutate,
+  } = useMutation<AxiosResponse<any, any>, { message: string }, string, unknown>(
+    (query: string) => getContactsList(query),
+    {}
+  );
 
   // TODO: maybe switch back to useQuery to preserve data and prevent ui lag
 
   const { page, lastPageNumber, limit, pageNumbers, changePage, changeLimit } = usePagination(
-    data ? data.data.meta : { skipped: 0, total: 0 }
+    meta ? meta : { skipped: 0, total: 0 }
   );
 
   useEffect(() => {
@@ -45,14 +49,9 @@ export default function ContactsList() {
 
   return (
     <>
-      <ApiStateHandler
-        isLoading={isLoading}
-        isError={isError}
-        error={error!}
-        hasData={Boolean(data?.data.items.length)}
-      >
+      <ApiStateHandler isLoading={isLoading} isError={isError} error={error!} hasData={Boolean(items.length)}>
         <ContactsGrid>
-          {data?.data.items.map((contact: ContactModel) => (
+          {items.map((contact: ContactModel) => (
             <ContactCard
               key={contact.id}
               firstName={contact.first_name}

@@ -1,18 +1,20 @@
 import { Controller, useForm } from "react-hook-form";
 
+import { FilterQueryType } from "types";
 import useParamParser from "hooks/useParamParser";
 import SearchIcon from "components/icons/SearchIcon";
 import ClearIcon from "components/icons/ClearIcon";
-import { Div, Input, FormField, ErrorMessage, SubmitButton } from "components/UiKit";
-import { FilterQueryType } from "types";
+import { Div, Input, FormField, ErrorMessage } from "components/UiKit";
+import SelectField from "components/SelectField";
 
-import SelectField from "../../../components/SelectField";
+import { SubmitButton } from "../styled.components";
 
 const filterSelectOptions = [
   { value: "first_name", label: "First Name" },
   { value: "last_name", label: "Last Name" },
   { value: "phone", label: "Phone" },
 ];
+
 export default function FilterForm() {
   // TODO: add validation to input based on select value
   const { updateFilter, removeKeyFromParams } = useParamParser();
@@ -35,6 +37,8 @@ export default function FilterForm() {
     reset({ filter: "" }, { keepErrors: false });
     removeKeyFromParams("where");
   };
+
+  // TODO: move Input to components
 
   return (
     <Div>

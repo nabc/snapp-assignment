@@ -1,7 +1,9 @@
 import LocationIcon from "components/icons/LocationIcon";
 import PersonIcon from "components/icons/PersonIcon";
 import PhoneIcon from "components/icons/PhoneIcon";
-import { Avatar, Card, Anchor } from "components/UiKit";
+import { Avatar, Card } from "components/UiKit";
+
+import { Anchor } from "../styled.components";
 import InfoWithIcon from "./InfoWithIcon";
 
 interface ContactCardProps {
