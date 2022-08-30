@@ -16,15 +16,25 @@ const filterSelectOptions = [
 ];
 
 export default function FilterForm() {
-  const { updateFilter, removeKeyFromParams } = useParamParser();
+  const { searchParams, updateFilter, removeKeyFromParams } = useParamParser();
 
+  const getDefaultValues = () => {
+    const where = searchParams.get("where");
+    if (where === null) {
+      return { filter: "", filterType: "first_name" };
+    }
+    const whereObject = JSON.parse(where);
+    const filterType: string = Object.keys(whereObject)[0];
+    const filter: string = whereObject[filterType].contains;
+    return { filterType, filter };
+  };
   const {
     control,
     reset,
     getValues,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues: { filter: "", filterType: "first_name" } });
+  } = useForm({ defaultValues: getDefaultValues() });
 
   const onSubmit = (data: any) => {
     const filterType = data.filterType;

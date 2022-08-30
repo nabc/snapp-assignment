@@ -31,7 +31,7 @@ export default function Contact() {
       dispatch(updateFrequentContact(contactData.data));
     },
   });
-
+  // src={process.env.PUBLIC_URL + '/img/logo.png'}
   return (
     <>
       <BackButton onClick={goBack}>
@@ -40,7 +40,7 @@ export default function Contact() {
       <ApiStateHandler isLoading={isLoading} isError={isError} error={error} hasData={Boolean(data)}>
         <Column>
           <Card>
-            <Avatar src={data.avatar} />
+            <Avatar src={data.avatar || process.env.PUBLIC_URL + "/default-robot.png"} />
           </Card>
           <DetailsGrid>
             <div>

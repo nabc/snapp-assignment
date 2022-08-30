@@ -12,24 +12,41 @@ const sortSelectOptions = [
   { value: "last_name", label: "Last Name" },
 ];
 
+const limitSelectOptions = [
+  { value: "12", label: "12" },
+  { value: "24", label: "24" },
+  { value: "36", label: "36" },
+];
+
 export default function Sort() {
-  const { updateSort, removeKeyFromParams } = useParamParser();
+  const { searchParams, limit, setLimit, updateSort, removeKeyFromParams } = useParamParser();
+  const sortParamsArray = searchParams.get("sort")?.split(" ");
+  console.log(sortParamsArray);
 
-  const [sortBy, setSortBy] = useState("");
-  const [order, setOrder] = useState("ASC");
+  const [sortBy, setSortBy] = useState(sortParamsArray ? sortParamsArray[0] : "");
+  const [order, setOrder] = useState(sortParamsArray ? sortParamsArray[1] : "ASC");
 
+  const generateSortString = () => {
+    const newSortString = sortBy + " " + order;
+    updateSort(newSortString);
+  };
   useEffect(() => {
     if (!sortBy.length) {
       removeKeyFromParams("sort");
     } else {
-      const newSortString = sortBy + " " + order;
-      updateSort(newSortString);
+      generateSortString();
     }
-  }, [sortBy, order]);
+  }, [sortBy]);
+
+  useEffect(() => {
+    if (sortBy.length) {
+      generateSortString();
+    }
+  }, [order]);
 
   return (
-    <div className="flex flex-row justify-start mt-3">
-      <div className="my-1 md:my-0 md:mx-1 basis-1/4">
+    <div className="flex flex-row justify-between mt-3">
+      <div className="flex flex-row my-1 md:my-0 md:mx-1 basis-3/8">
         <SelectField
           hasDefaultOption
           value={sortBy}
@@ -39,9 +56,7 @@ export default function Sort() {
           options={sortSelectOptions}
           label="Sort By"
         />
-      </div>
-      {sortBy.length > 0 && (
-        <div className="flex flex-col items-start justify-end my-1 md:my-0 md:mx-1 basis-1/4">
+        <div className="flex flex-col items-start justify-end my-1 md:my-0 md:mx-1 ">
           <RadioInputField
             checked={order === "ASC"}
             value="ASC"
@@ -59,7 +74,17 @@ export default function Sort() {
             }}
           />
         </div>
-      )}
+      </div>
+      <div className="my-1 md:my-0 md:mx-1 basis-1/8">
+        <SelectField
+          value={`${limit}`}
+          onChange={(event: any) => {
+            setLimit(parseInt(event.target.value));
+          }}
+          options={limitSelectOptions}
+          label="Items Per Page"
+        />
+      </div>
     </div>
   );
 }
