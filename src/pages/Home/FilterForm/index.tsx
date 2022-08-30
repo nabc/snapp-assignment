@@ -3,11 +3,11 @@ import { Controller, useForm } from "react-hook-form";
 import { FilterQueryType } from "types";
 import useParamParser from "hooks/useParamParser";
 import SearchIcon from "components/icons/SearchIcon";
-import ClearIcon from "components/icons/ClearIcon";
-import { Div, Input, FormField, ErrorMessage } from "components/UiKit";
+import { Div } from "components/UiKit";
 import SelectField from "components/SelectField";
 
 import { SubmitButton } from "../styled.components";
+import InputField from "components/InputField";
 
 const filterSelectOptions = [
   { value: "first_name", label: "First Name" },
@@ -56,13 +56,12 @@ export default function FilterForm() {
             control={control}
             rules={{ required: "This field is required" }}
             render={({ field }) => (
-              <FormField>
-                <Input {...field} type="text" error={Boolean(errors.filter)} placeholder="Type here ..." />
-                <ClearIcon onClick={clearFilter} className="h-6 w-6 absolute right-1 top-2 cursor-pointer" />
-                <ErrorMessage>
-                  <>{errors.filter?.message}</>
-                </ErrorMessage>
-              </FormField>
+              <InputField
+                {...field}
+                handleClearIconClick={clearFilter}
+                placeholder="Type here ..."
+                errorMessage={errors.filter?.message}
+              />
             )}
           />
         </div>

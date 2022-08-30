@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 
-import RadioInput from "components/RadioInput";
+import RadioInputField from "components/RadioInputField";
 import SelectField from "components/SelectField";
 import useParamParser from "hooks/useParamParser";
 
@@ -42,7 +42,7 @@ export default function Sort() {
       </div>
       {sortBy.length > 0 && (
         <div className="flex flex-col items-start justify-end my-1 md:my-0 md:mx-1 basis-1/4">
-          <RadioInput
+          <RadioInputField
             checked={order === "ASC"}
             value="ASC"
             label="Ascending"
@@ -50,7 +50,7 @@ export default function Sort() {
               setOrder(event.target.value);
             }}
           />
-          <RadioInput
+          <RadioInputField
             checked={order === "DESC"}
             value="DESC"
             label="Descending"

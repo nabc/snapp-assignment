@@ -1,13 +1,13 @@
 import { forwardRef, Ref } from "react";
 
-interface RadioInputProps {
+interface RadioInputFieldProps {
   checked: boolean;
   label: string;
   value: string;
   onChange: (...event: any[]) => void;
 }
 
-const RadioInput = forwardRef(({ checked, label, value, onChange }: RadioInputProps, ref: Ref<any>) => {
+const RadioInputField = forwardRef(({ checked, label, value, onChange }: RadioInputFieldProps, ref: Ref<any>) => {
   return (
     <div className="flex items-center">
       <input
@@ -24,4 +24,4 @@ const RadioInput = forwardRef(({ checked, label, value, onChange }: RadioInputPr
   );
 });
 
-export default RadioInput;
+export default RadioInputField;
