@@ -49,6 +49,14 @@ export default function ContactsList() {
 
   return (
     <>
+      <Pagination
+        page={page}
+        lastPageNumber={lastPageNumber}
+        limit={limit}
+        pageNumbers={pageNumbers}
+        changePage={changePage}
+        changeLimit={changeLimit}
+      />
       <ApiStateHandler isLoading={isLoading} isError={isError} error={error!} hasData={Boolean(items.length)}>
         <ContactsGrid>
           {items.map((contact: ContactModel) => (
@@ -64,14 +72,6 @@ export default function ContactsList() {
           ))}
         </ContactsGrid>
       </ApiStateHandler>
-      <Pagination
-        page={page}
-        lastPageNumber={lastPageNumber}
-        limit={limit}
-        pageNumbers={pageNumbers}
-        changePage={changePage}
-        changeLimit={changeLimit}
-      />
     </>
   );
 }

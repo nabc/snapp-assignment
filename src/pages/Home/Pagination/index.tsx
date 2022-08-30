@@ -29,7 +29,7 @@ export default function Pagination({
   changeLimit,
 }: PaginationProps) {
   return (
-    <nav className="flex flex-col items-center justify-center mt-8">
+    <nav className="flex flex-col items-center justify-center my-4">
       <ul className="inline-flex items-center -space-x-px">
         <PageButton label="First" onClick={() => changePage(1)} StartIcon={BackArrowIcon} disabled={page === 1} />
         <PageButton label="Previous" onClick={() => changePage(page > 1 ? page - 1 : 1)} disabled={page === 1} />

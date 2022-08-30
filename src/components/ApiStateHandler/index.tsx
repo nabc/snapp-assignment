@@ -1,6 +1,7 @@
 import { InfoSpan } from "components/UiKit";
 import { PropsWithChildren } from "react";
 
+import LoaderSpinner from "./LoaderSpinner";
 interface ApiStateHandlerProps {
   isLoading: boolean;
   isError: boolean;
@@ -19,10 +20,10 @@ export default function ApiStateHandler({
   }
 
   return (
-    <>
-      {isLoading && <InfoSpan info>Loading...</InfoSpan>}
+    <div className="relative">
+      {isLoading && <LoaderSpinner />}
       {!hasData && !isLoading && <InfoSpan info>Ooops.... No Data!</InfoSpan>}
       {children}
-    </>
+    </div>
   );
 }
