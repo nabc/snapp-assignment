@@ -16,19 +16,19 @@ const filterSelectOptions = [
 ];
 
 export default function FilterForm() {
-  // TODO: add validation to input based on select value
   const { updateFilter, removeKeyFromParams } = useParamParser();
 
   const {
     control,
     reset,
+    getValues,
     handleSubmit,
     formState: { errors },
   } = useForm({ defaultValues: { filter: "", filterType: "first_name" } });
 
   const onSubmit = (data: any) => {
-    const filterData = data.filter;
     const filterType = data.filterType;
+    const filterData = data.filter;
     const where: FilterQueryType = { [filterType]: { contains: filterData } };
     updateFilter(where);
   };
@@ -37,8 +37,6 @@ export default function FilterForm() {
     reset({ filter: "" }, { keepErrors: false });
     removeKeyFromParams("where");
   };
-
-  // TODO: move Input to components
 
   return (
     <Div>
@@ -54,7 +52,23 @@ export default function FilterForm() {
           <Controller
             name="filter"
             control={control}
-            rules={{ required: "This field is required" }}
+            rules={{
+              validate: {
+                required: (v) => Boolean(v) || "This field is required",
+                onlyNumber: (v) => {
+                  if (getValues("filterType") === "phone") {
+                    return /^\d+$/.test(v) || "Only numbers are allowed!";
+                  }
+                  return true;
+                },
+                onlyChar: (v) => {
+                  if (getValues("filterType") !== "phone") {
+                    return /^[a-zA-Z]+$/.test(v) || "Only characters are allowed!";
+                  }
+                  return true;
+                },
+              },
+            }}
             render={({ field }) => (
               <InputField
                 {...field}
