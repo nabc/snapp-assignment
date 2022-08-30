@@ -12,6 +12,7 @@ interface PaginationProps {
 export default function Pagination({ total = 0 }: PaginationProps) {
   const { page, totalPages, limit, skipped, pageNumbers, changeSkipped } = usePagination(total);
 
+  //TODO: previous button is still active when filtering on a higher page to a result with lower pages
   return (
     <nav className="flex flex-col items-center justify-center my-4">
       <ul className="inline-flex items-center -space-x-px">
