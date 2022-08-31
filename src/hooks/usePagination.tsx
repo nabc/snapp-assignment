@@ -1,35 +1,51 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
-import { MetaModel } from "types";
 
-export default function usePagination({ skipped = 0, total }: Omit<MetaModel, "criteria" | "limit">) {
-  const [limit, setLimit] = useState(12);
-  const [page, setPage] = useState(skipped > 0 ? Math.ceil(skipped / limit) : 1);
-  const [pageNumbers, setPageNumbers] = useState([1, 2, 3, 4, 5]);
-  const lastPageNumber = Math.ceil(total / limit);
+import { fromParamsActions, useParams } from "contexts/ParamsContext";
+
+export default function usePagination(total: number) {
+  const {
+    state: { limit, skip },
+    dispatch,
+  } = useParams();
+
+  const changeSkip = (newSkip: number) => {
+    dispatch(fromParamsActions.updateSkip(newSkip));
+  };
+
+  const [page, setPage] = useState(skip > 0 ? Math.ceil(skip / limit) : 1);
+  const [totalPages, setTotalPages] = useState(Math.ceil(total / limit));
+
+  const generatePageNumbers = (mode?: string) => {
+    if (totalPages < 6) {
+      // create an array with the length of total pages if total pages are less than 5
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    if ([1, 2, 3].includes(page) || mode === "init") {
+      // create an array with the range of 1 to 5 because these page numbers could not be at center as it would result to pages with a minus page number
+      return [1, 2, 3, 4, 5];
+    }
+    if (page > totalPages - 3) {
+      // create an array with the range of `totalPages-4` to `totalPages` because these page numbers could not be at center as it would result to pages with a page number higher than total page numbers
+      return [totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+    // create an array with the range of `page-2` to `page+2`  to keep the current page at the center
+    return [page - 2, page - 1, page, page + 1, page + 2];
+  };
+
+  const [pageNumbers, setPageNumbers] = useState(() => {
+    const initialState = generatePageNumbers("init");
+    return initialState;
+  });
 
   useEffect(() => {
-    let newPageNumbers = [];
-    if (page < 3) {
-      newPageNumbers = [1, 2, 3, 4, 5];
-    } else if (page > lastPageNumber - 3) {
-      newPageNumbers = [lastPageNumber - 4, lastPageNumber - 3, lastPageNumber - 2, lastPageNumber - 1, lastPageNumber];
-    } else {
-      newPageNumbers = [page - 2, page - 1, page, page + 1, page + 2];
-    }
+    setPageNumbers(generatePageNumbers());
+  }, [page, totalPages]);
 
-    setPageNumbers(newPageNumbers);
-  }, [page]);
+  useEffect(() => {
+    setPage(Math.floor((skip + limit) / limit));
+    setTotalPages(Math.ceil(total / limit));
+  }, [skip, limit, total]);
 
-  const changePage = (pageNumber: number) => {
-    if (pageNumber > 0 && pageNumber <= lastPageNumber) {
-      setPage(pageNumber);
-    }
-  };
-
-  const changeLimit = (newLimit: number) => {
-    setLimit(newLimit);
-  };
-
-  return { page, lastPageNumber, limit, pageNumbers, changePage, changeLimit };
+  return { skip, limit, page, totalPages, pageNumbers, changeSkip };
 }

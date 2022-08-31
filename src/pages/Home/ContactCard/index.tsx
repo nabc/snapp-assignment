@@ -18,7 +18,7 @@ export default function ContactCard({ firstName, lastName, phone, avatar, addres
   return (
     <Anchor to={`${id}`} className="">
       <Card>
-        <Avatar alt="Contact's Avatar" className="" src={avatar} />
+        <Avatar alt="Contact's Avatar" className="" src={avatar || process.env.PUBLIC_URL + "/default-robot.png"} />
         <header className="flex flex-col items-start w-full leading-tight py-2 ">
           <InfoWithIcon Icon={PersonIcon}>{firstName + " " + lastName}</InfoWithIcon>
           <InfoWithIcon Icon={PhoneIcon}>{phone || "-"}</InfoWithIcon>

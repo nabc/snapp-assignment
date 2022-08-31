@@ -1,36 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { FilterQueryType } from "types";
+
+import { useParams } from "contexts/ParamsContext";
 
 export default function useParamParser() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // /passenger/?where={"first_name":{"contains":"Ab"},"last_name":{"contains":"a"}}&sort=createdAt DESC&limit=30
+  const {
+    state: { skip, limit, where, sortBy, sortOrder },
+  } = useParams();
 
-  const updateSearchParams = (key: string, value: string) => {
-    searchParams.set(key, value);
-    setSearchParams(searchParams, { replace: true });
+  const addOrRemoveStringParams = (key: string, value: string, removalCondition: boolean) => {
+    if (removalCondition) {
+      searchParams.delete(key);
+    } else {
+      searchParams.set(key, value);
+    }
   };
 
-  const updateFilter = (filterObject: FilterQueryType) => {
-    updateSearchParams("where", JSON.stringify(filterObject));
-  };
-
-  const updateSort = (sort: string) => {
-    updateSearchParams("sort", sort);
-  };
-
-  const updatePageParameters = useCallback((limit: number, skip: number) => {
+  useEffect(() => {
     searchParams.set("limit", limit.toString());
     searchParams.set("skip", skip.toString());
+    addOrRemoveStringParams("where", where, where === "");
+    addOrRemoveStringParams("sort", sortBy + " " + sortOrder, sortBy === "");
+
+    // console.log(searchParams.toString());
+
     setSearchParams(searchParams);
-  }, []);
+  }, [skip, limit, where, sortBy, sortOrder]);
 
-  const removeKeyFromParams = (key: string) => {
-    searchParams.delete(key);
-    setSearchParams(searchParams, { replace: true });
+  return {
+    searchParams,
   };
-
-  return { updateFilter, updateSort, updatePageParameters, removeKeyFromParams };
 }

@@ -1,13 +1,20 @@
 import { Controller, useForm } from "react-hook-form";
 
-import { FilterQueryType } from "types";
-import useParamParser from "hooks/useParamParser";
+import { fromParamsActions, useParams } from "contexts/ParamsContext";
 import SearchIcon from "components/icons/SearchIcon";
-import ClearIcon from "components/icons/ClearIcon";
-import { Div, Input, FormField, ErrorMessage } from "components/UiKit";
+import { Div } from "components/UiKit";
 import SelectField from "components/SelectField";
+import InputField from "components/InputField";
 
 import { SubmitButton } from "../styled.components";
+
+type FilterQueryObjectType = { contains: string };
+
+interface FilterQueryType {
+  phone?: FilterQueryObjectType;
+  first_name?: FilterQueryObjectType;
+  last_name?: FilterQueryObjectType;
+}
 
 const filterSelectOptions = [
   { value: "first_name", label: "First Name" },
@@ -16,29 +23,40 @@ const filterSelectOptions = [
 ];
 
 export default function FilterForm() {
-  // TODO: add validation to input based on select value
-  const { updateFilter, removeKeyFromParams } = useParamParser();
+  const {
+    state: { where },
+    dispatch,
+  } = useParams();
+
+  const getDefaultValues = () => {
+    if (where === "") {
+      return { filter: "", filterType: "first_name" };
+    }
+    const whereObject = JSON.parse(where);
+    const filterType: string = Object.keys(whereObject)[0];
+    const filter: string = whereObject[filterType].contains;
+    return { filterType, filter };
+  };
 
   const {
     control,
     reset,
+    getValues,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues: { filter: "", filterType: "first_name" } });
+  } = useForm({ defaultValues: getDefaultValues() });
 
   const onSubmit = (data: any) => {
-    const filterData = data.filter;
     const filterType = data.filterType;
+    const filterData = data.filter;
     const where: FilterQueryType = { [filterType]: { contains: filterData } };
-    updateFilter(where);
+    dispatch(fromParamsActions.updateFilter(JSON.stringify(where)));
   };
 
   const clearFilter = () => {
     reset({ filter: "" }, { keepErrors: false });
-    removeKeyFromParams("where");
+    dispatch(fromParamsActions.updateFilter(""));
   };
-
-  // TODO: move Input to components
 
   return (
     <Div>
@@ -54,15 +72,30 @@ export default function FilterForm() {
           <Controller
             name="filter"
             control={control}
-            rules={{ required: "This field is required" }}
+            rules={{
+              validate: {
+                required: (v) => Boolean(v) || "This field is required",
+                onlyNumber: (v) => {
+                  if (getValues("filterType") === "phone") {
+                    return /^\d+$/.test(v) || "Only numbers are allowed!";
+                  }
+                  return true;
+                },
+                onlyChar: (v) => {
+                  if (getValues("filterType") !== "phone") {
+                    return /^[a-zA-Z]+$/.test(v) || "Only characters are allowed!";
+                  }
+                  return true;
+                },
+              },
+            }}
             render={({ field }) => (
-              <FormField>
-                <Input {...field} type="text" error={Boolean(errors.filter)} placeholder="Type here ..." />
-                <ClearIcon onClick={clearFilter} className="h-6 w-6 absolute right-1 top-2 cursor-pointer" />
-                <ErrorMessage>
-                  <>{errors.filter?.message}</>
-                </ErrorMessage>
-              </FormField>
+              <InputField
+                {...field}
+                handleClearIconClick={clearFilter}
+                placeholder="Type here ..."
+                errorMessage={errors.filter?.message}
+              />
             )}
           />
         </div>

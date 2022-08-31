@@ -13,25 +13,3 @@ export interface ContactModel {
   updatedAt: number;
   id: number;
 }
-
-export interface MetaModel {
-  criteria: any;
-  limit: number;
-  skipped: number;
-  total: number;
-}
-
-export type FilterQueryObjectType = { contains: string };
-
-export type FilterQueryType = {
-  phone?: FilterQueryObjectType;
-  first_name?: FilterQueryObjectType;
-  last_name?: FilterQueryObjectType;
-};
-
-export interface QueryObjectType {
-  where?: FilterQueryType;
-  limit: string;
-  skip: string;
-  sort?: string;
-}

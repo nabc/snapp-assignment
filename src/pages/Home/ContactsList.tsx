@@ -1,55 +1,40 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { AxiosResponse } from "axios";
+import { useQuery } from "@tanstack/react-query";
 
-import { getContactsList } from "api/contacts";
 import useParamParser from "hooks/useParamParser";
-import usePagination from "hooks/usePagination";
-import ApiStateHandler from "components/ApiStateHandler";
 import { ContactModel } from "types";
+import { getContactsList } from "api/contacts";
+import ApiStateHandler from "components/ApiStateHandler";
 import ContactCard from "pages/Home/ContactCard";
 
 import Pagination from "./Pagination";
 import { ContactsGrid } from "./styled.components";
 
 export default function ContactsList() {
-  const { updatePageParameters } = useParamParser();
-  const { search } = useLocation();
+  const { searchParams } = useParamParser();
 
   const {
     isLoading,
+    isFetching,
     isError,
     data: { data: { items, meta } = { items: [], meta: {} } } = {},
     error,
-    mutate,
-  } = useMutation<AxiosResponse<any, any>, { message: string }, string, unknown>(
-    (query: string) => getContactsList(query),
-    {}
-  );
-
-  // TODO: maybe switch back to useQuery to preserve data and prevent ui lag
-
-  const { page, lastPageNumber, limit, pageNumbers, changePage, changeLimit } = usePagination(
-    meta ? meta : { skipped: 0, total: 0 }
-  );
-
-  useEffect(() => {
-    if (search === "") {
-      updatePageParameters(12, 0);
-    } else {
-      mutate(search);
+  } = useQuery<any, { message: string }>(
+    ["projects", searchParams.toString()],
+    () => getContactsList(searchParams.toString()),
+    {
+      keepPreviousData: true,
     }
-  }, [search]);
-
-  useEffect(() => {
-    updatePageParameters(limit, (page - 1) * 12);
-  }, [page, limit]);
+  );
 
   return (
     <>
-      <ApiStateHandler isLoading={isLoading} isError={isError} error={error!} hasData={Boolean(items.length)}>
+      <Pagination total={meta.total} />
+      <ApiStateHandler
+        isLoading={isLoading || isFetching}
+        isError={isError}
+        error={error!}
+        hasData={Boolean(items.length)}
+      >
         <ContactsGrid>
           {items.map((contact: ContactModel) => (
             <ContactCard
@@ -64,14 +49,6 @@ export default function ContactsList() {
           ))}
         </ContactsGrid>
       </ApiStateHandler>
-      <Pagination
-        page={page}
-        lastPageNumber={lastPageNumber}
-        limit={limit}
-        pageNumbers={pageNumbers}
-        changePage={changePage}
-        changeLimit={changeLimit}
-      />
     </>
   );
 }
