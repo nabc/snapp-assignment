@@ -40,15 +40,15 @@ export const InfoSpan = styled.span.attrs<any, any>({
   className: "flex justify-center w-full",
 })`
   ${(props) => {
-    if (props.info) {
-      return tw` text-blue-500`;
+    switch (props.mode) {
+      case "info":
+        return tw` text-blue-500`;
+      case "error":
+        return tw` text-red-500`;
+      case "success":
+        return tw` text-green-500`;
+      default:
+        return tw` text-black`;
     }
-    if (props.error) {
-      return tw` text-red-500`;
-    }
-    if (props.success) {
-      return tw` text-green-500`;
-    }
-    return tw` text-black`;
   }}
 `;

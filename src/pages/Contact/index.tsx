@@ -3,9 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 
 import { getContact } from "api/contacts";
+import { updateFrequentContact } from "store/appSlice";
 import ApiStateHandler from "components/ApiStateHandler";
 import { Avatar, Card } from "components/UiKit";
-import { updateFrequentContact } from "store/appSlice";
 import BackArrowIcon from "components/icons/BackArrowIcon";
 import dateConvertor from "utils/dateConvertor";
 
@@ -31,7 +31,7 @@ export default function Contact() {
       dispatch(updateFrequentContact(contactData.data));
     },
   });
-  // src={process.env.PUBLIC_URL + '/img/logo.png'}
+
   return (
     <>
       <BackButton onClick={goBack}>

@@ -1,13 +1,20 @@
 import { Controller, useForm } from "react-hook-form";
 
-import { FilterQueryType } from "types";
-import useParamParser from "hooks/useParamParser";
+import { fromParamsActions, useParams } from "contexts/ParamsContext";
 import SearchIcon from "components/icons/SearchIcon";
 import { Div } from "components/UiKit";
 import SelectField from "components/SelectField";
+import InputField from "components/InputField";
 
 import { SubmitButton } from "../styled.components";
-import InputField from "components/InputField";
+
+type FilterQueryObjectType = { contains: string };
+
+interface FilterQueryType {
+  phone?: FilterQueryObjectType;
+  first_name?: FilterQueryObjectType;
+  last_name?: FilterQueryObjectType;
+}
 
 const filterSelectOptions = [
   { value: "first_name", label: "First Name" },
@@ -16,11 +23,13 @@ const filterSelectOptions = [
 ];
 
 export default function FilterForm() {
-  const { searchParams, updateFilter, removeKeyFromParams } = useParamParser();
+  const {
+    state: { where },
+    dispatch,
+  } = useParams();
 
   const getDefaultValues = () => {
-    const where = searchParams.get("where");
-    if (where === null) {
+    if (where === "") {
       return { filter: "", filterType: "first_name" };
     }
     const whereObject = JSON.parse(where);
@@ -28,6 +37,7 @@ export default function FilterForm() {
     const filter: string = whereObject[filterType].contains;
     return { filterType, filter };
   };
+
   const {
     control,
     reset,
@@ -40,12 +50,12 @@ export default function FilterForm() {
     const filterType = data.filterType;
     const filterData = data.filter;
     const where: FilterQueryType = { [filterType]: { contains: filterData } };
-    updateFilter(where);
+    dispatch(fromParamsActions.updateFilter(JSON.stringify(where)));
   };
 
   const clearFilter = () => {
     reset({ filter: "" }, { keepErrors: false });
-    removeKeyFromParams("where");
+    dispatch(fromParamsActions.updateFilter(""));
   };
 
   return (

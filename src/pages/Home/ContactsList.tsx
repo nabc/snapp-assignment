@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
+import useParamParser from "hooks/useParamParser";
 import { ContactModel } from "types";
 import { getContactsList } from "api/contacts";
 import ApiStateHandler from "components/ApiStateHandler";
@@ -11,7 +10,7 @@ import Pagination from "./Pagination";
 import { ContactsGrid } from "./styled.components";
 
 export default function ContactsList() {
-  const { search } = useLocation();
+  const { searchParams } = useParamParser();
 
   const {
     isLoading,
@@ -19,9 +18,13 @@ export default function ContactsList() {
     isError,
     data: { data: { items, meta } = { items: [], meta: {} } } = {},
     error,
-  } = useQuery<any, { message: string }>(["projects", search], () => getContactsList(search), {
-    keepPreviousData: true,
-  });
+  } = useQuery<any, { message: string }>(
+    ["projects", searchParams.toString()],
+    () => getContactsList(searchParams.toString()),
+    {
+      keepPreviousData: true,
+    }
+  );
 
   return (
     <>
