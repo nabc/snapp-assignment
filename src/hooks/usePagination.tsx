@@ -26,10 +26,10 @@ export default function usePagination(total: number) {
       return [1, 2, 3, 4, 5];
     }
     if (page > totalPages - 3) {
-      // create an array with the range of totalPages - 4 to totalPages because these page numbers could not be at center as it would result to pages with a page number higher than total page numbers
+      // create an array with the range of `totalPages-4` to `totalPages` because these page numbers could not be at center as it would result to pages with a page number higher than total page numbers
       return [totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
     }
-    // create an array with the range of page -2 to page +2  to keep the current page at the center
+    // create an array with the range of `page-2` to `page+2`  to keep the current page at the center
     return [page - 2, page - 1, page, page + 1, page + 2];
   };
 
@@ -39,18 +39,13 @@ export default function usePagination(total: number) {
   });
 
   useEffect(() => {
-    setPage(Math.ceil((skip + limit) / limit));
-    setTotalPages(Math.ceil(total / limit));
-  }, [total]);
-
-  useEffect(() => {
     setPageNumbers(generatePageNumbers());
   }, [page, totalPages]);
 
   useEffect(() => {
     setPage(Math.floor((skip + limit) / limit));
     setTotalPages(Math.ceil(total / limit));
-  }, [skip, limit]);
+  }, [skip, limit, total]);
 
   return { skip, limit, page, totalPages, pageNumbers, changeSkip };
 }

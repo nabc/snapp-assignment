@@ -17,9 +17,12 @@ export function ParamsReducer(state: ParamsReducerState, action: fromActions.Par
       };
     }
     case fromActions.ActionTypes.UpdateLimit: {
+      const newSkip = Math.floor(state.skip / action.limit) * action.limit;
+
       return {
         ...state,
         limit: action.limit,
+        skip: newSkip,
       };
     }
     case fromActions.ActionTypes.UpdateFilter: {
